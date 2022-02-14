@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticleRepository;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
@@ -13,54 +15,109 @@ class Article
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'text')]
-    private $Article;
+    #[ORM\Column(type: 'datetime_immutable')]
+    private $createdAt;
 
-    #[ORM\Column(type: 'datetime')]
-    private $date;
+    #[ORM\Column(type: 'string')]
+    private $content;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'relationadmin')]
+    #[ORM\Column(type: 'string', length: 255)]
+    private $title;
+
+    #[ORM\OneToMany(mappedBy: 'article', targetEntity: Category::class)]
+    private $relation;
+
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'articles')]
     #[ORM\JoinColumn(nullable: false)]
-    private $admin;
+    private $Relation;
+
+    public function __construct()
+    {
+        $this->relation = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getArticle(): ?string
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->Article;
+        return $this->createdAt;
     }
 
-    public function setArticle(string $Article): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
-        $this->Article = $Article;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getContent(): ?string
     {
-        return $this->date;
+        return $this->content;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setContent(string $content): self
     {
-        $this->date = $date;
+        $this->content = $content;
 
         return $this;
     }
 
-    public function getAdmin(): ?User
+    public function getTitle(): ?string
     {
-        return $this->admin;
+        return $this->title;
     }
 
-    public function setAdmin(?User $admin): self
+    public function setTitle(string $title): self
     {
-        $this->admin = $admin;
+        $this->title = $title;
 
         return $this;
     }
+
+    /**
+     * @return Collection|Category[]
+     */
+    public function getRelation(): Collection
+    {
+        return $this->relation;
+    }
+
+    public function addRelation(Category $relation): self
+    {
+        if (!$this->relation->contains($relation)) {
+            $this->relation[] = $relation;
+            $relation->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelation(Category $relation): self
+    {
+        if ($this->relation->removeElement($relation)) {
+            // set the owning side to null (unless already changed)
+            if ($relation->getArticle() === $this) {
+                $relation->setArticle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function setRelation(?Category $Relation): self
+    {
+        $this->Relation = $Relation;
+
+        return $this;
+    }
+
+
+
+
+   
+
 }

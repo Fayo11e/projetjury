@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Article;
+use Doctrine\DBAL\Types\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -12,9 +13,9 @@ class ArticleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Article')
-            ->add('date')
-            ->add('admin')
+            ->add('createdAt',TextType::class)
+            ->add('title')
+            ->add('content')
         ;
     }
 

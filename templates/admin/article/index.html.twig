@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base.html.twig' %}
 
 {% block title %}Article index{% endblock %}
 
@@ -9,8 +9,9 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Article</th>
                 <th>Date</th>
+                <th>Title</th>
+                <th>Content</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -18,8 +19,9 @@
         {% for article in articles %}
             <tr>
                 <td>{{ article.id }}</td>
-                <td>{{ article.Article }}</td>
-                <td>{{ article.date ? article.date|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ article.createdAt }}</td>
+                <td>{{ article.title }}</td>
+                <td>{{ article.content }}</td>
                 <td>
                     <a href="{{ path('admin_article_show', {'id': article.id}) }}">show</a>
                     <a href="{{ path('admin_article_edit', {'id': article.id}) }}">edit</a>
@@ -27,7 +29,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="5">no records found</td>
             </tr>
         {% endfor %}
         </tbody>

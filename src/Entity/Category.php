@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
@@ -16,11 +18,15 @@ class Category
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $articlePath;
+    #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'relation')]
+    private $article;
 
-    #[ORM\ManyToOne(targetEntity: Article::class)]
-    private $ManyToOne;
+
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -39,27 +45,53 @@ class Category
         return $this;
     }
 
-    public function getArticlePath(): ?string
+    public function getArticle(): ?Article
     {
-        return $this->articlePath;
+        return $this->article;
     }
 
-    public function setArticlePath(string $articlePath): self
+    public function setArticle(?Article $article): self
     {
-        $this->articlePath = $articlePath;
+        $this->article = $article;
 
         return $this;
     }
 
-    public function getManyToOne(): ?Article
+    /**
+     * @return Collection|Article[]
+     */
+    public function getArticles(): Collection
     {
-        return $this->ManyToOne;
+        return $this->articles;
     }
 
-    public function setManyToOne(?Article $ManyToOne): self
+    public function addArticle(Article $article): self
     {
-        $this->ManyToOne = $ManyToOne;
+        if (!$this->articles->contains($article)) {
+            $this->articles[] = $article;
+            $article->setRelation($this);
+        }
 
         return $this;
     }
+
+    public function removeArticle(Article $article): self
+    {
+        if ($this->articles->removeElement($article)) {
+            // set the owning side to null (unless already changed)
+            if ($article->getRelation() === $this) {
+                $article->setRelation(null);
+            }
+        }
+
+        return $this;
+    }
+
+ 
+
+
+
+
+   
+
 }
