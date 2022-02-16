@@ -15,7 +15,7 @@ class Article
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: 'string')]
     private $createdAt;
 
     #[ORM\Column(type: 'string')]
@@ -42,12 +42,12 @@ class Article
         return $this->id;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?string
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(string $createdAt): self
     {
         $this->createdAt = $createdAt;
 
